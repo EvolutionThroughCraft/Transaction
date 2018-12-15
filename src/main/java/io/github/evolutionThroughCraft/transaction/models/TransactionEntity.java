@@ -7,6 +7,7 @@ package io.github.evolutionThroughCraft.transaction.models;
 
 import io.github.evolutionThroughCraft.common.service.main.api.Transaction;
 import io.github.evolutionThroughCraft.common.service.main.models.Stamps;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,10 +34,12 @@ public class TransactionEntity extends Stamps<String> implements Transaction {
     )
     private Long transactionId;
     
-    @NotBlank
+    @Column(name = "amount", nullable = false)
     private Integer amount; // whole dollars only, no pennies
     
+    @Column(name = "creditor_id")
     private Long creditorId; // when null, reflects a user-withdrawl
-    
+
+    @Column(name = "debitor_id")
     private Long debitorId; // when null, reflects a user-deposit
 }
