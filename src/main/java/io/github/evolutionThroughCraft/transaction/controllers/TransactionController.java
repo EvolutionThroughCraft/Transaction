@@ -8,10 +8,12 @@ package io.github.evolutionThroughCraft.transaction.controllers;
 import io.github.evolutionThroughCraft.common.service.main.utils.ResourceUtility;
 import io.github.evolutionThroughCraft.transaction.models.TransactionEntity;
 import io.github.evolutionThroughCraft.transaction.repo.TransactionRepository;
+import io.github.evolutionThroughCraft.transaction.rest.DeleteOperation;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +33,9 @@ public class TransactionController {
     @Autowired
     private TransactionRepository transactionRepo;
     
+    @Autowired
+    private DeleteOperation deleteOperation;
+    
     @GetMapping("/{accountId}")
     public List<TransactionEntity> getTransactions(@PathVariable("accountId") Long id) {
         return transactionRepo.findAllTransactionsForAccount(id);
@@ -46,5 +51,14 @@ public class TransactionController {
     public TransactionEntity createTransaction(@Valid @RequestBody TransactionEntity transaction) {
         ResourceUtility.ensureResource(transaction);
         return transactionRepo.save(transaction);
+    }
+    
+    @DeleteMapping("/{accountId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAccount(@PathVariable("accountId") Long id) {
+//        transactionRepo.removeAccountAsDebitor(id);
+//        transactionRepo.removeAccountAsCreditor(id);
+//        transactionRepo.removeAbandonedTransactions();
+        deleteOperation.perform(id);
     }
 }
