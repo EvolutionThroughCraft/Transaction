@@ -22,7 +22,7 @@ import lombok.Setter;
  * @author dwin
  */
 @Entity
-@Table(name = "transactions")
+@Table(name = TransactionTableColumns.TBL_TRANSACTIONS)
 @Getter @Setter
 public class TransactionEntity extends Stamps<String> implements Transaction {
     
@@ -32,14 +32,15 @@ public class TransactionEntity extends Stamps<String> implements Transaction {
             sequenceName = "transaction_sequence",
             initialValue = 1000
     )
+    @Column(name = TransactionTableColumns.COL_PK_TRANSACTION_ID)
     private Long transactionId;
     
-    @Column(name = "amount", nullable = false)
+    @Column(name = TransactionTableColumns.COL_AMOUNT, nullable = false)
     private Integer amount; // whole dollars only, no pennies
     
-    @Column(name = "creditor_id")
-    private Long creditorId; // when null, reflects a user-withdrawl
+    @Column(name = TransactionTableColumns.COL_FK_CREDITOR_ID)
+    private Long creditorId; // when null, reflects a user-withdrawl (or deleted counterparty act)
 
-    @Column(name = "debitor_id")
-    private Long debitorId; // when null, reflects a user-deposit
+    @Column(name = TransactionTableColumns.COL_FK_DEBITOR_ID)
+    private Long debitorId; // when null, reflects a user-deposit (or deleted counterparty act)
 }

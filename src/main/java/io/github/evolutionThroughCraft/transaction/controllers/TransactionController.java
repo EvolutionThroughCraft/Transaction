@@ -5,6 +5,7 @@
  */
 package io.github.evolutionThroughCraft.transaction.controllers;
 
+import io.github.evolutionThroughCraft.common.service.main.routes.TransactionPaths;
 import io.github.evolutionThroughCraft.common.service.main.utils.ResourceUtility;
 import io.github.evolutionThroughCraft.transaction.models.TransactionEntity;
 import io.github.evolutionThroughCraft.transaction.repo.TransactionRepository;
@@ -27,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author dwin
  */
 @RestController
-@RequestMapping("/transactions")
-public class TransactionController {
+@RequestMapping()
+public class TransactionController implements TransactionPaths {
     
     @Autowired
     private TransactionRepository transactionRepo;
@@ -36,29 +37,36 @@ public class TransactionController {
     @Autowired
     private DeleteOperation deleteOperation;
     
-    @GetMapping("/{accountId}")
-    public List<TransactionEntity> getTransactions(@PathVariable("accountId") Long id) {
-        return transactionRepo.findAllTransactionsForAccount(id);
+    @GetMapping(GET_TRANSACTIONS_PATH)
+    public List<TransactionEntity> getTransactions(@PathVariable(ACCOUNT_ID_VAR) Long id) {
+        return transactionRepo.findAllByCreditorIdOrDebitorId(id, id);
     }
     
-    @GetMapping("/{accountId}/balance")
-    public Long getBalance(@PathVariable("accountId") Long id) {
+    @GetMapping(GET_BALANCE_PATH)
+    public Long getBalance(@PathVariable(ACCOUNT_ID_VAR) Long id) {
         return transactionRepo.findCurrentBalanceForAccount(id);
-    }    
+    }   
     
-    @PostMapping
+    @GetMapping(GET_TEST_PATH)
+    public List<TransactionEntity> testFetch() {
+        return transactionRepo.findAll();
+    }
+    
+    @PostMapping(POST_TRANSACTIONS_PATH)
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionEntity createTransaction(@Valid @RequestBody TransactionEntity transaction) {
         ResourceUtility.ensureResource(transaction);
         return transactionRepo.save(transaction);
     }
     
-    @DeleteMapping("/{accountId}")
+    @DeleteMapping(DELETE_TRANSACTIONS_PATH)
     @ResponseStatus(HttpStatus.OK)
-    public void deleteAccount(@PathVariable("accountId") Long id) {
+    public void deleteAccount(@PathVariable(ACCOUNT_ID_VAR) Long id) {
 //        transactionRepo.removeAccountAsDebitor(id);
 //        transactionRepo.removeAccountAsCreditor(id);
 //        transactionRepo.removeAbandonedTransactions();
+
         deleteOperation.perform(id);
+        
     }
 }

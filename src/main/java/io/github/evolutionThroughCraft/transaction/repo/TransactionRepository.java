@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -18,25 +19,28 @@ import org.springframework.data.repository.query.Param;
  */
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
     
-    @Query(
-      value="SELECT * FROM transactions T WHERE T.creditor_id = :actId OR T.debitor_id = :actId")
-    public List<TransactionEntity> findAllTransactionsForAccount(@Param("actId")Long actId);
+      public List<TransactionEntity> findAllByCreditorIdOrDebitorId(Long creditorId, Long debitorId);      
     
-    @Query(
-      value="SELECT credits - debits FROM"
-            + " (SELECT SUM(amount) credits FROM transactions WHERE creditor_id = :actId),"
-            + " (SELECT SUM(amount) debits FROM transactions WHERE debitor_id = :actId)")
-    public Long findCurrentBalanceForAccount(@Param("actId")Long actId);
+    @Query(value=TransactionSql.FIND_CURRENT_BALANCE_FOR_ACCOUNT, nativeQuery = true)
+    public Long findCurrentBalanceForAccount(@Param(TransactionSql.VAR_ACCOUNT_ID) Long actId);
     
     @Modifying
-    @Query(value="UPDATE transactions T set T.creditor_id = NULL where creditor_id = :actId")
-    public int removeAccountAsCreditor(@Param("actId")Long actId);
+    @Transactional
+    @Query(value=TransactionSql.REMOVE_ACCOUNT_AS_CREDITOR, nativeQuery = true)
+    public int removeAccountAsCreditor(
+                    @Param(TransactionSql.VAR_ACCOUNT_ID) Long actId,
+                    @Param(TransactionSql.VAR_UPDATE_USER) String updateUser);
     
     @Modifying
-    @Query(value="UPDATE transactions T set T.debitor_id = NULL where debitor_id = :actId")
-    public int removeAccountAsDebitor(@Param("actId")Long actId);
-    
+    @Transactional
+    @Query(value=TransactionSql.REMOVE_ACCOUNT_AS_DEBITOR, nativeQuery = true)
+    public int removeAccountAsDebitor(
+                    @Param(TransactionSql.VAR_ACCOUNT_ID) Long actId,
+                    @Param(TransactionSql.VAR_UPDATE_USER) String updateUser);    
+
     @Modifying
-    @Query(value="DELETE FROM transactions T WHERE T.debitor_id = NULL AND T.creditor_id = NULL")
-    public int removeAbandonedTransactions();
+    @Transactional
+    @Query(value=TransactionSql.DELETE_ABANDONED_TRANSACTIONS, nativeQuery = true)
+    public int removeAbandonedTransactions();    
+
 }
