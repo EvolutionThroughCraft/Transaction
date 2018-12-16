@@ -5,7 +5,7 @@
  */
 package io.github.evolutionThroughCraft.transaction.controllers;
 
-import io.github.evolutionThroughCraft.common.service.main.routes.TransactionPaths;
+import io.github.evolutionThroughCraft.common.service.main.routes.TransactionRoutes;
 import io.github.evolutionThroughCraft.common.service.main.utils.ResourceUtility;
 import io.github.evolutionThroughCraft.transaction.models.TransactionEntity;
 import io.github.evolutionThroughCraft.transaction.repo.TransactionRepository;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping()
-public class TransactionController implements TransactionPaths {
+public class TransactionController implements TransactionRoutes {
     
     @Autowired
     private TransactionRepository transactionRepo;
