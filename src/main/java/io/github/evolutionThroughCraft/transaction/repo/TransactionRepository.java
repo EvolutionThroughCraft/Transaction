@@ -22,7 +22,7 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
       public List<TransactionEntity> findAllByCreditorIdOrDebitorId(Long creditorId, Long debitorId);      
     
     @Query(value=TransactionSql.FIND_CURRENT_BALANCE_FOR_ACCOUNT, nativeQuery = true)
-    public Long findCurrentBalanceForAccount(@Param(TransactionSql.VAR_ACCOUNT_ID) Long actId);
+    public Integer findCurrentBalanceForAccount(@Param(TransactionSql.VAR_ACCOUNT_ID) Long actId);
     
     @Modifying
     @Transactional

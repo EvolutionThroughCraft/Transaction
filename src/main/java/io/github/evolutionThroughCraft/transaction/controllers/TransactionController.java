@@ -5,6 +5,8 @@
  */
 package io.github.evolutionThroughCraft.transaction.controllers;
 
+import io.github.evolutionThroughCraft.common.service.main.api.Balance;
+import io.github.evolutionThroughCraft.common.service.main.api.pojo.BalancePojo;
 import io.github.evolutionThroughCraft.common.service.main.routes.TransactionRoutes;
 import io.github.evolutionThroughCraft.common.service.main.utils.ResourceUtility;
 import io.github.evolutionThroughCraft.transaction.models.TransactionEntity;
@@ -43,8 +45,10 @@ public class TransactionController implements TransactionRoutes {
     }
     
     @GetMapping(GET_BALANCE_PATH)
-    public Long getBalance(@PathVariable(ACCOUNT_ID_VAR) Long id) {
-        return transactionRepo.findCurrentBalanceForAccount(id);
+    public Balance getBalance(@PathVariable(ACCOUNT_ID_VAR) Long id) {
+        BalancePojo pojo = new BalancePojo();
+        pojo.setAmount(transactionRepo.findCurrentBalanceForAccount(id));
+        return pojo;
     }   
     
     @GetMapping(GET_TEST_PATH)
