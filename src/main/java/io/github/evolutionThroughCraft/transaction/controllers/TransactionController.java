@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author dwin
  */
 @RestController
-@RequestMapping()
+@RequestMapping
 public class TransactionController implements TransactionRoutes {
     
     @Autowired
