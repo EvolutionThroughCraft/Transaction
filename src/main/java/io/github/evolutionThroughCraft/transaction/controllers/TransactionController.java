@@ -45,7 +45,7 @@ public class TransactionController implements TransactionRoutes {
     }
     
     @GetMapping(GET_BALANCE_PATH)
-    public Balance getBalance(@PathVariable(ACCOUNT_ID_VAR) Long id) {
+    public BalancePojo getBalance(@PathVariable(ACCOUNT_ID_VAR) Long id) {
         BalancePojo pojo = new BalancePojo();
         pojo.setAmount(transactionRepo.findCurrentBalanceForAccount(id));
         return pojo;
