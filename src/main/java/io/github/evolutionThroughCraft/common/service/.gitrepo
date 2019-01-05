@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/EvolutionThroughCraft/CommonServicePackage.git
 	branch = master
-	commit = 28ca61ea86ca83531e75f9bacc3a36f5d742a856
-	parent = d1632546d7d1b4cab08f3444e2f756f4a7ee79d6
+	commit = 2338374023cce1f01878225835137a26bfc942c5
+	parent = 895d47d1d91351b09b82c6dde4fa14aff13148f8
 	method = merge
 	cmdver = 0.4.0
