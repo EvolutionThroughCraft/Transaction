@@ -5,6 +5,7 @@
  */
 package io.github.evolutionThroughCraft.transaction.rest;
 
+import io.github.evolutionThroughCraft.common.arch.orchestrators.SimpleOperation;
 import io.github.evolutionThroughCraft.transaction.repo.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,16 +15,18 @@ import org.springframework.stereotype.Component;
  * @author dwin
  */
 @Component
-public class DeleteOperation {
+public class DeleteOperation extends SimpleOperation<Long, Boolean> {
     
     private static final String SYSTEM_ID = "del-op";
     
     @Autowired
     private TransactionRepository transactionRepo;
 
-    public void perform(Long accountId) {
+    @Override
+    public Boolean perform(Long accountId) {
         transactionRepo.removeAccountAsDebitor(accountId, SYSTEM_ID);
         transactionRepo.removeAccountAsCreditor(accountId, SYSTEM_ID);
         transactionRepo.removeAbandonedTransactions();
+        return true;
     }
 }
