@@ -11,14 +11,22 @@ import io.github.evolutionThroughCraft.common.arch.contracts.Contract;
  *
  * @author dwin
  */
-public abstract class ContractOperation<Arg, Rtn, Con extends Contract<Arg>> implements Operation<Arg, Rtn> {
+public abstract class ContractOperation<Arg, Rtn, Con extends Contract<Arg>> extends SimpleOperation<Arg, Rtn> {
     
     @Override
     public Rtn run(Arg arg) {
-        getContract().validate(arg);
-        return perform(arg);
+        debug("contract start");
+        Long time = System.currentTimeMillis();        
+        try {
+            getContract().validate(arg);            
+        } catch (Exception e) {
+            debug("contract finish(fail) time:"+(System.currentTimeMillis() - time));
+            throw e;
+        }
+        debug("contract finish(suc) time:"+(System.currentTimeMillis() - time));
+        
+        return super.run(arg);
     }
     
-    public abstract Rtn perform(Arg arg);
     public abstract Con getContract();
 }
