@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
  *
@@ -31,38 +32,39 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping
+@CrossOrigin
 public class TransactionController implements TransactionRoutes {
-    
+
     @Autowired
     private TransactionRepository transactionRepo;
-    
+
     @Autowired
     private DeleteOperation deleteOperation;
-    
+
     @GetMapping(GET_TRANSACTIONS_PATH)
     public List<TransactionEntity> getTransactions(@PathVariable(ACCOUNT_ID_VAR) Long id) {
         return transactionRepo.findAllByCreditorIdOrDebitorId(id, id);
     }
-    
+
     @GetMapping(GET_BALANCE_PATH)
     public BalancePojo getBalance(@PathVariable(ACCOUNT_ID_VAR) Long id) {
         BalancePojo pojo = new BalancePojo();
         pojo.setAmount(transactionRepo.findCurrentBalanceForAccount(id));
         return pojo;
-    }   
-    
+    }
+
     @GetMapping(GET_TEST_PATH)
     public List<TransactionEntity> testFetch() {
         return transactionRepo.findAll();
     }
-    
+
     @PostMapping(POST_TRANSACTIONS_PATH)
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionEntity createTransaction(@Valid @RequestBody TransactionEntity transaction) {
         ResourceUtility.ensureResource(transaction);
         return transactionRepo.save(transaction);
     }
-    
+
     @DeleteMapping(DELETE_TRANSACTIONS_PATH)
     @ResponseStatus(HttpStatus.OK)
     public void deleteAccount(@PathVariable(ACCOUNT_ID_VAR) Long id) {
@@ -71,6 +73,6 @@ public class TransactionController implements TransactionRoutes {
 //        transactionRepo.removeAbandonedTransactions();
 
         deleteOperation.perform(id);
-        
+
     }
 }
